@@ -1,0 +1,37 @@
+name: matmul-channel
+context:
+  crystal: crystal eval 'puts Crystal::VERSION'
+  host: uname
+  hostname: hostname
+measure:
+  - time
+  - cpu_time
+  - max_rss
+run:
+  if [[ "$CRYSTAL_WORKERS" == "0" ]]; then MATMUL_WORKERS="1"; else MATMUL_WORKERS="$(($CRYSTAL_WORKERS-1))"; fi && ./matmul-channel-run $SIZE $MATMUL_WORKERS
+repeat: 3
+before: |
+  rm -rf $(crystal env CRYSTAL_CACHE_DIR)
+  crystal build --release matmul-channel.cr -o ./matmul-channel-st
+  rm -rf $(crystal env CRYSTAL_CACHE_DIR)
+  crystal build -Dpreview_mt --release matmul-channel.cr -o ./matmul-channel-mt
+before_each:
+  if [[ "$CRYSTAL_WORKERS" == "0" ]]; then
+    cp ./matmul-channel-st ./matmul-channel-run;
+  else
+    cp ./matmul-channel-mt ./matmul-channel-run;
+  fi;
+after: rm -f ./matmul-channel-st* ./matmul-channel-mt* ./matmul-channel-run
+matrix:
+  env:
+    SIZE:
+      - 10
+      - 100
+      - 1000
+      - 2000
+    CRYSTAL_WORKERS:
+      - 0 # single-thread
+      - 2
+      - 4
+      - 6
+      - 8

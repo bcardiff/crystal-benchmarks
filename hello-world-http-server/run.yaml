@@ -1,0 +1,41 @@
+name: hello-world-http-server
+context:
+  crystal: crystal eval 'puts Crystal::VERSION'
+  host: uname
+  hostname: hostname
+measure:
+  - time
+  - cpu_time
+  - max_rss
+  - requests_per_second:
+      regex: Requests per second:\s+(?<measure>\d+.\d+)\s+\[#/sec\] \(mean\)
+run: ./hello-world-http-server-run
+repeat: 3
+loader: ../wait-for-it.sh 127.0.0.1:8080 -- ab -c $CONNECTIONS -n $REQUESTS http://127.0.0.1:8080/
+before: |
+  rm -rf $(crystal env CRYSTAL_CACHE_DIR)
+  crystal build --release hello-world-http-server.cr -o ./hello-world-http-server-st
+  rm -rf $(crystal env CRYSTAL_CACHE_DIR)
+  crystal build -Dpreview_mt --release hello-world-http-server.cr -o ./hello-world-http-server-mt
+before_each:
+  if [[ "$CRYSTAL_WORKERS" == "0" ]]; then
+    cp ./hello-world-http-server-st ./hello-world-http-server-run;
+  else
+    cp ./hello-world-http-server-mt ./hello-world-http-server-run;
+  fi;
+  ../kill-by-port.sh 8080
+after: rm -f ./hello-world-http-server-st* ./hello-world-http-server-mt* ./hello-world-http-server-run
+matrix:
+  env:
+    REQUESTS:
+      - 100
+      - 1000
+      - 10000
+    CONNECTIONS:
+      - 4
+      - 40
+    CRYSTAL_WORKERS:
+      - 0 # single-thread
+      - 1 # multi-thread
+      - 2
+      - 8

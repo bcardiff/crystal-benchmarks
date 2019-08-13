@@ -1,0 +1,30 @@
+name: channel-primes
+context:
+  crystal: crystal eval 'puts Crystal::VERSION'
+  host: uname
+  hostname: hostname
+measure:
+  - time
+  - cpu_time
+  - max_rss
+run: ./channel-primes-run
+repeat: 3
+before: |
+  rm -rf $(crystal env CRYSTAL_CACHE_DIR)
+  crystal build --release channel-primes.cr -o ./channel-primes-st
+  rm -rf $(crystal env CRYSTAL_CACHE_DIR)
+  crystal build -Dpreview_mt --release channel-primes.cr -o ./channel-primes-mt
+before_each:
+  if [[ "$CRYSTAL_WORKERS" == "0" ]]; then
+    cp ./channel-primes-st ./channel-primes-run;
+  else
+    cp ./channel-primes-mt ./channel-primes-run;
+  fi;
+after: rm -f ./channel-primes-st* ./channel-primes-mt* ./channel-primes-run
+matrix:
+  env:
+    CRYSTAL_WORKERS:
+      - 0 # single-thread
+      - 1 # multi-thread
+      - 2
+      - 8
