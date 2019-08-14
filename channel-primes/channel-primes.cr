@@ -1,4 +1,5 @@
 # Ported from Go sample from this page: https://web.archive.org/web/20160602135806/http://dancallahan.info/journal/go-concurrency/#How+do+channels+and+goroutines+work+together?
+SIZE = ARGV[0].to_i
 
 def generate(chan)
   i = 2
@@ -20,7 +21,7 @@ end
 ch = Channel(Int32).new
 spawn generate(ch)
 
-100.times do
+SIZE.times do
   prime = ch.receive
   puts prime
   ch1 = Channel(Int32).new

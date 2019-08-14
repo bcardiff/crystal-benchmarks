@@ -7,7 +7,7 @@ measure:
   - time
   - cpu_time
   - max_rss
-run: ./channel-primes-run
+run: ./channel-primes-run $SIZE
 repeat: 3
 before: |
   rm -rf $(crystal env CRYSTAL_CACHE_DIR)
@@ -23,8 +23,13 @@ before_each:
 after: rm -f ./channel-primes-st* ./channel-primes-mt* ./channel-primes-run
 matrix:
   env:
+    SIZE:
+      - 100
+      - 500
+      - 1000
     CRYSTAL_WORKERS:
       - 0 # single-thread
       - 1 # multi-thread
       - 2
+      - 4
       - 8
