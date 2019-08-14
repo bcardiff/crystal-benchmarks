@@ -9,7 +9,7 @@ measure:
   - max_rss
 run: ./matmul $SIZE
 repeat: 3
-before: crystal build --release matmul.cr -o ./matmul
+before: crystal build --no-debug --release matmul.cr -o ./matmul
 after: rm -f ./matmul ./matmul.dwarf
 matrix:
   env:

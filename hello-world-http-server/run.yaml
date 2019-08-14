@@ -14,9 +14,9 @@ repeat: 3
 loader: ../wait-for-it.sh 127.0.0.1:8080 -- ab -c $CONNECTIONS -n $REQUESTS http://127.0.0.1:8080/
 before: |
   rm -rf $(crystal env CRYSTAL_CACHE_DIR)
-  crystal build --release hello-world-http-server.cr -o ./hello-world-http-server-st
+  crystal build --no-debug --release hello-world-http-server.cr -o ./hello-world-http-server-st
   rm -rf $(crystal env CRYSTAL_CACHE_DIR)
-  crystal build -Dpreview_mt --release hello-world-http-server.cr -o ./hello-world-http-server-mt
+  crystal build --no-debug -Dpreview_mt --release hello-world-http-server.cr -o ./hello-world-http-server-mt
 before_each:
   if [[ "$CRYSTAL_WORKERS" == "0" ]]; then
     cp ./hello-world-http-server-st ./hello-world-http-server-run;

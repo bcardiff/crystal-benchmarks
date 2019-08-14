@@ -12,9 +12,9 @@ run:
 repeat: 3
 before: |
   rm -rf $(crystal env CRYSTAL_CACHE_DIR)
-  crystal build --release matmul-channel.cr -o ./matmul-channel-st
+  crystal build --no-debug --release matmul-channel.cr -o ./matmul-channel-st
   rm -rf $(crystal env CRYSTAL_CACHE_DIR)
-  crystal build -Dpreview_mt --release matmul-channel.cr -o ./matmul-channel-mt
+  crystal build --no-debug -Dpreview_mt --release matmul-channel.cr -o ./matmul-channel-mt
 before_each:
   if [[ "$CRYSTAL_WORKERS" == "0" ]]; then
     cp ./matmul-channel-st ./matmul-channel-run;

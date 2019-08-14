@@ -11,9 +11,9 @@ run: ./channel-primes-run
 repeat: 3
 before: |
   rm -rf $(crystal env CRYSTAL_CACHE_DIR)
-  crystal build --release channel-primes.cr -o ./channel-primes-st
+  crystal build --no-debug --release channel-primes.cr -o ./channel-primes-st
   rm -rf $(crystal env CRYSTAL_CACHE_DIR)
-  crystal build -Dpreview_mt --release channel-primes.cr -o ./channel-primes-mt
+  crystal build --no-debug -Dpreview_mt --release channel-primes.cr -o ./channel-primes-mt
 before_each:
   if [[ "$CRYSTAL_WORKERS" == "0" ]]; then
     cp ./channel-primes-st ./channel-primes-run;
