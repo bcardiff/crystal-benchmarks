@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-folder="run-$(date +%Y%m%d%H%M%S)"
+folder="output-$(date +%Y%m%d%H%M%S)"
 mkdir $folder
 
 benchy run -v --ndjson=$folder/channel-primes.ndjson channel-primes/run.yaml
