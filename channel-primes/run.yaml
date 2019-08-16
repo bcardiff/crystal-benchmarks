@@ -1,6 +1,6 @@
 name: channel-primes
 context:
-  crystal: crystal eval 'puts Crystal::VERSION'
+  crystal: crystal eval "puts Crystal::VERSION"
   host: uname
   hostname: hostname
 measure:

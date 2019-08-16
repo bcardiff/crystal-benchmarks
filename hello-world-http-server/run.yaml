@@ -1,6 +1,6 @@
 name: hello-world-http-server
 context:
-  crystal: crystal eval 'puts Crystal::VERSION'
+  crystal: crystal eval "puts Crystal::VERSION"
   host: uname
   hostname: hostname
 measure:
