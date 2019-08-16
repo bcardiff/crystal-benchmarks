@@ -1,0 +1,23 @@
+name: compile
+context:
+  crystal: crystal eval "puts Crystal::VERSION"
+  host: uname
+  hostname: hostname
+measure:
+  - time
+  - cpu_time
+  - max_rss
+run: crystal build $FLAGS $PROGRAM.cr -o ./bin/$PROGRAM
+repeat: 3
+before_each: |
+  rm -rf $(crystal env CRYSTAL_CACHE_DIR)
+after: |
+  rm -rf ./bin/*
+matrix:
+  env:
+    PROGRAM:
+      - hello_world
+    FLAGS:
+      -
+      - --release
+      - --no-debug --release
