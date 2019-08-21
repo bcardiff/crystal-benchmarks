@@ -1,0 +1,59 @@
+name: hello-world-db-http-server
+context:
+  crystal: crystal eval "puts Crystal::VERSION"
+  host: uname
+  hostname: hostname
+measure:
+  - time
+  - cpu_time
+  - max_rss
+  - requests_per_second:
+      regex: Requests per second:\s+(?<measure>\d+.\d+)\s+\[#/sec\] \(mean\)
+run: DATABASE_URL="$DATABASE$POOL_CONFIG" ./hello-world-db-http-server-run
+repeat: 3
+loader: ../wait-for-it.sh 127.0.0.1:8080 -- ab -c $CONNECTIONS -n $REQUESTS http://127.0.0.1:8080/
+before: |
+  docker-compose down
+  docker-compose up -d
+  sleep 10
+  docker exec -i $(docker-compose ps -q mysql) sh -c 'exec mysql -uroot crystal' < ./sample.sql
+  docker exec -i $(docker-compose ps -q postgres) psql crystal postgres < ./sample.sql
+
+  shards install
+  rm -rf $(crystal env CRYSTAL_CACHE_DIR)
+  crystal build --no-debug --release hello-world-db-http-server.cr -o ./hello-world-db-http-server-st
+  rm -rf $(crystal env CRYSTAL_CACHE_DIR)
+  crystal build --no-debug -Dpreview_mt --release hello-world-db-http-server.cr -o ./hello-world-db-http-server-mt
+before_each:
+  if [[ "$CRYSTAL_WORKERS" == "0" ]]; then
+    cp ./hello-world-db-http-server-st ./hello-world-db-http-server-run;
+  else
+    cp ./hello-world-db-http-server-mt ./hello-world-db-http-server-run;
+  fi;
+  ../kill-by-port.sh 8080
+after: |
+  rm -f ./hello-world-db-http-server-st* ./hello-world-db-http-server-mt* ./hello-world-db-http-server-run
+  docker-compose down
+matrix:
+  env:
+    REQUESTS:
+      # - 100
+      # - 1000
+      - 10000
+    CONNECTIONS:
+      - 4
+      - 16
+      - 32
+      - 64
+    CRYSTAL_WORKERS:
+      - 0 # single-thread
+      - 1 # multi-thread
+      - 2
+      - 4
+      - 8
+    DATABASE:
+      - postgres://postgres@localhost/crystal
+      # - mysql://root@localhost/crystal
+    POOL_CONFIG:
+      # - "?initial_pool_size=16&max_pool_size=16&max_idle_pool_size=16"
+      - "?initial_pool_size=32&max_pool_size=32&max_idle_pool_size=32"

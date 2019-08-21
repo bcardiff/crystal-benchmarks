@@ -1,0 +1,14 @@
+version: 1.0
+shards:
+  db:
+    github: crystal-lang/crystal-db
+    commit: 7a9de8ac4d232610c57efb8fab084fcc65739407
+
+  mysql:
+    github: crystal-lang/crystal-mysql
+    commit: b6f3d9f328d8789622d7e4f81e792db3c4e75120
+
+  pg:
+    github: will/crystal-pg
+    commit: cafe3b9a627115885280e49dc58f5cea0ff7359b
+

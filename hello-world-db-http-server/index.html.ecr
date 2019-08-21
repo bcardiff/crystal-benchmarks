@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+  <ul>
+    <% rs.each do %>
+      <li><%= rs.read(String) %></li>
+    <% end %>
+  </ul>
+</body>
+
+</html>

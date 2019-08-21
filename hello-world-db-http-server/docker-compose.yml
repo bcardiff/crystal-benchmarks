@@ -1,0 +1,23 @@
+version: '2.0'
+
+# postgres://postgres@localhost/crystal
+# mysql://root@localhost/crystal
+
+# docker exec -i $(docker-compose ps -q mysql) sh -c 'exec mysql -uroot crystal' < ./sample.sql
+# docker exec -i $(docker-compose ps -q postgres) psql crystal postgres < ./sample.sql
+
+services:
+  postgres:
+    image: postgres:9.6-alpine
+    environment:
+      POSTGRES_DB: crystal
+    ports:
+      - "5432:5432"
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: crystal
+    ports:
+      - "3306:3306"
