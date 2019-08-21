@@ -7,6 +7,8 @@ measure:
   - time
   - cpu_time
   - max_rss
+  - file_size:
+      command: ls -dn ./bin/$PROGRAM | awk '{print $5}'
 run: crystal build $FLAGS $PROGRAM.cr -o ./bin/$PROGRAM
 repeat: 3
 before_each: |
@@ -19,5 +21,6 @@ matrix:
       - hello_world
     FLAGS:
       -
+      - --no-debug
       - --release
       - --no-debug --release
