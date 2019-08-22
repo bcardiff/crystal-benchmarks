@@ -25,9 +25,9 @@ after: rm -f ./matmul-channel-st* ./matmul-channel-mt* ./matmul-channel-run
 matrix:
   env:
     SIZE:
-      - 10
-      - 100
       - 1000
+      - 1500
+      - 1750
       - 2000
     CRYSTAL_WORKERS:
       - 0 # single-thread

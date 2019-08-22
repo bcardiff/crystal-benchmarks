@@ -33,9 +33,12 @@ matrix:
       - 10000
     CONNECTIONS:
       - 4
-      - 40
+      - 16
+      - 32
+      - 64
     CRYSTAL_WORKERS:
       - 0 # single-thread
       - 1 # multi-thread
       - 2
+      - 4
       - 8
