@@ -11,7 +11,7 @@ measure:
       regex: Requests per second:\s+(?<measure>\d+.\d+)\s+\[#/sec\] \(mean\)
 run: DATABASE_URL="$DATABASE$POOL_CONFIG" ./hello-world-db-http-server-run
 repeat: 3
-loader: ../wait-for-it.sh 127.0.0.1:8080 -- ab -c $CONNECTIONS -n $REQUESTS http://127.0.0.1:8080/
+loader: ../wait-for-it.sh 127.0.0.1:8080 -- wrk -t$WRK_THREADS -c$WRK_CONNECTIONS -d$WRK_DURATION -s../http-wrk-report.lua http://127.0.0.1:8080/
 before: |
   docker-compose down
   docker-compose up -d
@@ -36,15 +36,17 @@ after: |
   docker-compose down
 matrix:
   env:
-    REQUESTS:
-      # - 100
-      # - 1000
-      - 10000
-    CONNECTIONS:
+    WRK_THREADS:
+      - 2
       - 4
-      - 16
-      - 32
-      - 64
+      - 8
+      - 12
+    WRK_CONNECTIONS:
+      - 100
+      - 1000
+      - 10000
+    WRK_DURATION:
+      - 30s
     CRYSTAL_WORKERS:
       - 0 # single-thread
       - 1 # multi-thread
