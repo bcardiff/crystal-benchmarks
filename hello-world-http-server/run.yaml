@@ -28,19 +28,20 @@ after: rm -f ./hello-world-http-server-st* ./hello-world-http-server-mt* ./hello
 matrix:
   env:
     WRK_THREADS:
-      - 2
+      # - 2
       - 4
-      - 8
-      - 12
+      # - 8
+      # - 12
     WRK_CONNECTIONS:
       - 100
       - 1000
-      - 10000
+      # - 5000
+      # - 10000
     WRK_DURATION:
       - 30s
     CRYSTAL_WORKERS:
       - 0 # single-thread
       - 1 # multi-thread
-      - 2
+      # - 2
       - 4
       - 8
